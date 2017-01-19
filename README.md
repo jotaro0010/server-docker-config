@@ -17,7 +17,7 @@ This is the structure for the docker folder:
 
 The `scripts/` folder holds the docker create scripts. Each script is basically just copied from the docker hub page for each app.
 
-The `containers/` folder hold the config files for the containers.
+The `containers/` folder hold the config files for the containers. The `.gitkeep` files are only there so the empty directories get added to github.
 
 ## Nginx Dockers
 ### System nginx
