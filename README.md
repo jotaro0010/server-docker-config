@@ -24,11 +24,32 @@ The `containers/` folder hold the config files for the containers. The `.gitkeep
 First there is the `nginx-system` container which handles the ssl connectivity, htaccess configuration, and user routing. It is the only nginx container with ports open to the internet, port 80 and 443. It will detect which user just logged in and connect to the appropriate nginx server for that user.
 
 ### User nginx
-Each user has there own nginx docker. for example for the user named jotaro there is a docker called jotaro-nginx.
-This docker handles all the reverse proxy settings for any other docker apps jotaro is running.
+Each user has there own nginx docker. for example for the user named `jotaro` there is a docker called `jotaro-nginx`.
+This docker handles all the reverse proxy settings for any other docker apps `jotaro` is running.
 
 ### Routing users
 For the system nginx docker there is a config file called `users.conf` inside the `opt/docker/containers/nginx/config/` folder. It holds a few if statements that check which user is logged in and it will reverse proxy them to the users nginx docker.
+
+## Docker Networks
+Each user has their own network in docker. This allows the containers that the user runs to be isolated from the rest of the network. using these networks I can have the dockers talk directly to each other and avoid opening ports to the host. This also keeps things easier when managing multiple users as you have less ports to manage.
+
+For example the `jackett` and `sonarr` dockers are able to work properly without any ports open to the network. In sonnar when setting the torznab provider you can replace the ip address in the link from jackett with the name of the docker and the port.<br/> 
+`https://{IP_ADDRESS}/jackett/torznab/{private_tracker}`<br/> 
+`https://jotaro-jackett:9117/jackett/torznab/{private_tracker}`<br/> 
+
+Each users nginx docker uses this to provide access to the docker application through reverse proxy. Using this I can minimize the open ports on the server.
+
+### Setting up and connecting the containers
+The first thing you need to do before creating the containers is create the network for the user.<br/> 
+The network is created using the command:<br/> 
+`docker network create $USER-net`
+
+To connect a docker to that network when you create it you need to use the `--net $USER-net` flag with the `docker create` command. this line is already included in the create scripts in the `docker/scripts/` folder.
+
+To join a docker to multiple networks you can do that after the docker is created by running this command:<br/> 
+`docker network connect jotaro-net nginx-system`
+This is how the nginx-system container connect to all the users networks. Just run it multiple times for each user. This command can be found in the `opt/docker/scripts/nginx.sh` file.
+
 
 ## References
 I copied a lot of the configs for the reverse proxy settings from Thermionix post here. He also had the commands for the htpasswd stuff in the comments that I used to create the `htpasswd.sh` script.<br/> 
