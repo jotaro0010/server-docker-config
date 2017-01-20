@@ -42,12 +42,12 @@ Each users nginx docker uses this to provide access to the docker application th
 ### Setting up and connecting the containers
 The first thing you need to do before creating the containers is create the network for the user.<br/> 
 The network is created using the command:<br/> 
-`docker network create $USER-net`
+`docker network create $USER-net`<br/> 
 
 To connect a docker to that network when you create it you need to use the `--net $USER-net` flag with the `docker create` command. this line is already included in the create scripts in the `docker/scripts/` folder.
 
 To join a docker to multiple networks you can do that after the docker is created by running this command:<br/> 
-`docker network connect jotaro-net nginx-system`
+`docker network connect jotaro-net nginx-system`<br/> 
 This is how the nginx-system container connect to all the users networks. Just run it multiple times for each user. This command can be found in the `opt/docker/scripts/nginx.sh` file.
 
 
