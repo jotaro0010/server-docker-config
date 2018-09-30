@@ -5,5 +5,8 @@ if [[ -z userOne ]]; then
 elif [[ userOne == "-h" ]]; then
         echo $help
 else
-    find ./ -type f -exec sed -i "s/userOne/$1/g" {} +
+    find ./ -type f -not -path '*.sh' \
+                    -not -path '*/nginx/config/services/*' \
+                    -not -path "*/nginx/config/conf.d"  \
+                        -exec sed -i "s/userOne/$2/g" {} +
 fi
