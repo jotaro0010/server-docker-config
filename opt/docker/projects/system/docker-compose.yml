@@ -1,0 +1,47 @@
+version: "3.5"
+services:
+    watchtower:
+        container_name: system-watchtower
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /opt/docker/containers/watchtower/config.json:/config.json
+        image: v2tec/watchtower
+        command: --cleanup
+
+    openvpn:
+        container_name: system-openvpn
+        restart: always
+        volumes:
+            - '/opt/docker/containers/openvpn/:/etc/openvpn'
+        ports:
+            - '1194:1194/udp'
+        cap_add:
+            - NET_ADMIN
+        image: kylemanna/openvpn
+
+    nginx:
+        container_name: system-nginx
+        restart: always
+        ports:
+            - '80:80'
+            - '443:443'
+        volumes:
+            - '/opt/docker/containers/nginx/html:/usr/share/nginx/html'
+            - '/opt/docker/containers/nginx/config/:/etc/nginx/'
+            - '/opt/docker/containers/nginx/ssl/private:/etc/ssl/private'
+            - '/opt/docker/containers/nginx/ssl/certs:/etc/ssl/certs'
+        logging:
+            options:
+                max-size: 1m
+        image: nginx
+        networks:
+            - user-one-net
+            - user-two-net
+
+networks:
+    user-one-net:
+        name: ${USER_ONE}-net
+        driver: bridge
+    user-two-net:
+        name: ${USER_TWO}-net
+        driver: bridge

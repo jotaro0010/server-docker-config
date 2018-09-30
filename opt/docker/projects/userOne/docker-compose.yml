@@ -1,0 +1,51 @@
+version: "3.5"
+services:
+    deluge:
+        container_name: ${USER_NAME}-deluge
+        restart: always
+        ports:
+            - 'deluge-ports'
+        environment:
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - TZ=${TZ}
+        volumes:
+            - '/home/${USER_NAME}/docker/containers/deluge/config:/config'
+            - '/home/${USER_NAME}/downloads/torrents:/downloads'
+        image: linuxserver/deluge
+
+    muximux:
+        container_name: ${USER_NAME}-muximux
+        restart: always
+        environment:
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - TZ=${TZ}
+        volumes:
+            - '/home/${USER_NAME}/docker/containers/muximux:/config'
+        image: linuxserver/muximux
+
+    nginx:
+        container_name: ${USER_NAME}-nginx
+        restart: always
+        volumes:
+            - '/home/${USER_NAME}/docker/containers/nginx/html:/usr/share/nginx/html'
+            - '/home/${USER_NAME}/docker/containers/nginx/config:/etc/nginx/'
+            - '/home/${USER_NAME}/docker/containers/nginx/ssl/private:/etc/ssl/private'
+            - '/home/${USER_NAME}/docker/containers/nginx/ssl/certs:/etc/ssl/certs'
+        logging:
+            options:
+                max-size: 1m
+        image: nginx
+
+    docker-compose-ui:
+        container_name: ${USER_NAME}-docker-compose-ui
+        volumes:
+            - '/var/run/docker.sock:/var/run/docker.sock'
+            - '/home/jotaro/docker/projects:/opt/docker-compose-projects'
+        image: francescou/docker-compose-ui
+
+networks:
+    default:
+        external:
+            name: ${USER_NAME}-net
