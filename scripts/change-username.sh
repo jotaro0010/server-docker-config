@@ -8,5 +8,5 @@ else
     find ./ -type f -not -path '*.sh' \
                     -not -path '*/nginx/config/services/*' \
                     -not -path "*/nginx/config/conf.d"  \
-                        -exec sed -i "s/userOne/$2/g" {} +
+                        -exec sed -i "s/userOne/$1/g" {} +
 fi
