@@ -42,7 +42,7 @@ services:
         container_name: ${USER_NAME}-docker-compose-ui
         volumes:
             - '/var/run/docker.sock:/var/run/docker.sock'
-            - '/home/jotaro/docker/projects:/opt/docker-compose-projects'
+            - '/opt/docker/projects:/opt/docker-compose-projects'
         image: francescou/docker-compose-ui
 
 networks:
